@@ -1,0 +1,48 @@
+spring:
+  kafka:
+    # broker实例初始化地址，以ip:port数据对形式存在，并以逗号分隔
+    # kafka会从这个初始化地址出发，自动发现完整的集群成员信息
+    bootstrap-servers: 139.129.108.126:9092, 139.129.108.126:9093, 139.129.108.126:9094
+    producer:
+      # 向broker端发送的任何消息的式都必须是字节数组
+      # 键序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 值序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 控制消息的持久化程度  消息会被发送到指定topic分区leader所在的broker上， producer会等待从该leader broker返回消息的写入结果
+      # acks含义: 给producer发送响应前，leader broker必须确保已成功写入该消息的副本数
+      # 0：无须任何副本成功写入  1:leader副本须成功写入  all/-1：所有副本须成功写入
+      acks: -1
+      # 消息发送失败时，重试的次数  默认是0不重试
+      # 当设置enable.idempotence=false并且max.in.flight.requests.per.connection=1，此时启用重试，可能会改变消息的顺序
+      # 原因：如果存在两个批次发送到单个分区，并且第一个批次失败并重试，但第二个批次成功，那么第二个批次中的消息可能会首先出现
+      retries: 3
+      # 缓存消息的缓冲区大小，单位字节 默认32MB
+      # kafka异步架构：消息会先发往内存缓冲区，由另外的读线程从内存缓冲区中读取然后做真正的发送
+      buffer-memory: 33554432
+      # 消息是否压缩，默认none，即不压缩  其他选项：gzip、snappy、lz4、zstd
+      compression-type: none
+      # 当多个消息发送到同一个分区时，会将多条消息封装进一个batch中来减少与broker的交互，默认16Kb
+      batch-size: 16384
+      # 用于跟踪请求源，向broker发出请求时，会带上这个字符串
+      client-id: "yiou_data_client_1"
+      # 以下是追加的其他配置项，需要使用properties做前缀
+      properties:
+        # 控制消息发送延时行为，默认0，即消息立即发送
+        # 稍延时一会，每次发送的消息数会增加，吞吐量也会上升
+        linger.ms: 4
+        # producer端单次请求能够发送的最大消息大小，默认1MB
+        max:
+          request:
+            size: 1048576
+        # 客户端等待请求的响应超时时间，默认30s
+        # 如果在超时之前没有收到响应，客户端将在必要时重新发送请求
+        request:
+          timeout:
+            ms: 30000
+        # 自定义分区
+        partitioner:
+          class: com.xiaotian.partitioner.AuditPartitioner
+
+
+
