@@ -43,7 +43,7 @@ spring:
         # 拦截器链：TimeStampPrependerInterceptor/CounterInterceptor
         # 拦截器链是有顺序的，按照拦截器链顺序作用于消息
         interceptor:
-          classes: com.xiaotian.interceptor.TimeStampPrependerInterceptor, com.xiaotian.interceptor.CounterInterceptor
+          classes: com.xiaotian.producer.interceptor.TimeStampPrependerInterceptor, com.xiaotian.producer.interceptor.CounterInterceptor
 
 
 

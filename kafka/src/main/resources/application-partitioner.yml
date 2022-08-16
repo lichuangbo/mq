@@ -42,7 +42,7 @@ spring:
             ms: 30000
         # 自定义分区
         partitioner:
-          class: com.xiaotian.partitioner.AuditPartitioner
+          class: com.xiaotian.producer.partitioner.AuditPartitioner
 
 
 

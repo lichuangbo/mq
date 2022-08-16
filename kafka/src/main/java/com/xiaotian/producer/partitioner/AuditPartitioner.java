@@ -1,4 +1,4 @@
-package com.xiaotian.partitioner;
+package com.xiaotian.producer.partitioner;
 
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;

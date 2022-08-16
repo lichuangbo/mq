@@ -1,4 +1,4 @@
-package com.xiaotian.interceptor;
+package com.xiaotian.producer.interceptor;
 
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
