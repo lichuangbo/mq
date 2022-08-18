@@ -1,9 +1,9 @@
 spring:
   kafka:
-    # broker实例初始化地址，以ip:port数据对形式存在，并以逗号分隔
-    # kafka会从这个初始化地址出发，自动发现完整的集群成员信息
-    bootstrap-servers: 139.129.108.126:9092, 139.129.108.126:9093, 139.129.108.126:9094
     producer:
+      # broker实例初始化地址，以ip:port数据对形式存在，并以逗号分隔
+      # kafka会从这个初始化地址出发，自动发现完整的集群成员信息
+      bootstrap-servers: 139.129.108.126:9092, 139.129.108.126:9093, 139.129.108.126:9094
       # 向broker端发送的任何消息的式都必须是字节数组
       # 键序列化方式
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -40,6 +40,44 @@ spring:
         request:
           timeout:
             ms: 30000
+    consumer:
+      bootstrap-servers: 139.129.108.126:9092, 139.129.108.126:9093, 139.129.108.126:9094
+      # 键解序列化方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 值解序列化方式
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 消费者组ID, 需保证唯一
+      group-id: "consumer_group_1"
+      # 是否自动提交位移, 设置为true，则consumer在后台自动提交位移：否则，用户需要手动提交位移
+      # 如果业务上需要较强的精确处理一次的需求，最好改成false，手动提交位移
+      enable-auto-commit: true
+      # 指定了没有初始位移信息或当前位移在集群中不存在时，kafka的应对策略
+      # earliest：指定从最早的位移开始消费; latest：指定从最新处位移开始消费; none：指定如果未发现位移信息或位移越界，则抛出异常
+      auto-offset-reset: earliest
+      # 单次 poll 调用返回的最大消息数,默认500条
+      # 这个参数不影响底层抓取行为，消费者会缓存抓取来的消息，然后按照配置的数目返回
+      max-poll-records: 500
+      # 消费者发往消费者组协调者心跳的间隔时间，默认3000ms
+      # 这个参数必须比session.timeout.ms小，通常小于它的1/3
+      heartbeat-interval:
+      # consumer端单次获取数据的最大字节数,默认1
+      # 当单次获取数据量<配置的该值时，consumer会等待积累到一定的数据后才会响应
+      # 我们可以将最大字节数设置的大一些，虽然增加了延迟，但获取了较高的吞吐量
+      fetch-min-size: 512
+      # 当不满足fetch-min-size时，服务器在响应获取请求之前阻塞的最长时间  默认500ms
+      fetch-max-wait: 500
+      properties:
+        # 客户端定期向代理发送心跳，以表明其活动状态, 超过这个时间会被踢出组，开始重平衡。默认45000ms
+        session:
+          timeout:
+            ms: 45000
+        # 使用消费者组管理时，两次poll()方法调用的最大延迟  默认300000ms,5分钟
+        # 当超过这个时间间隔没有向服务端发送poll()请求，会认为该consumer崩溃了，就会发起一次重平衡，并将分区分配给其他consumer
+        # 业务处理中，一般将这个时间设置为大于业务运行时间
+        max:
+          poll:
+            interval:
+              ms: 300000
 
 
 
