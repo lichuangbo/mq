@@ -1,5 +1,8 @@
 package com.xiaotian.consumer;
 
+import java.util.List;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -16,4 +19,15 @@ public class KafkaConsumerService {
     System.out.println(message);
   }
 
+  @KafkaListener(topics = "TOPIC_AUTOCOMMIT", groupId = "${spring.kafka.consumer.group-id}")
+  public void consumer2(String message, Consumer<String, String> consumer) {
+    System.out.println(message);
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    // 同步提交
+    consumer.commitSync();
+  }
 }

@@ -50,7 +50,9 @@ spring:
       group-id: "consumer_group_1"
       # 是否自动提交位移, 设置为true，则consumer在后台自动提交位移：否则，用户需要手动提交位移
       # 如果业务上需要较强的精确处理一次的需求，最好改成false，手动提交位移
-      enable-auto-commit: true
+      enable-auto-commit: false
+      # 当设置enable-auto-commit=true时，消费者端自动提交位移的间隔时间  默认5s
+      auto-commit-interval: 5000
       # 指定了没有初始位移信息或当前位移在集群中不存在时，kafka的应对策略
       # earliest：指定从最早的位移开始消费; latest：指定从最新处位移开始消费; none：指定如果未发现位移信息或位移越界，则抛出异常
       auto-offset-reset: earliest
